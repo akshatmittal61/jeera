@@ -1,15 +1,1 @@
-<svg width="1920" height="1920" viewBox="0 0 1920 1920" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_218_2)">
-<g clip-path="url(#clip1_218_2)">
-<path d="M961.31 126.171L1802.13 1920H1920L1018.94 0H901.064L0 1920H117.872L961.31 126.171ZM966.548 1555.2L1259.92 1250.74L1113.23 1097.14L966.548 943.543L675.798 1250.74L966.548 1555.2ZM966.548 1398.86L825.102 1250.74L966.548 1102.63L1107.99 1250.74L966.548 1398.86Z" fill="black"/>
-</g>
-</g>
-<defs>
-<clipPath id="clip0_218_2">
-<rect width="1920" height="1920" fill="white"/>
-</clipPath>
-<clipPath id="clip1_218_2">
-<rect width="1920" height="1920" fill="white"/>
-</clipPath>
-</defs>
-</svg>
+<?xml version="1.0" ?><svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><defs><style>.cls-1{fill:#202d40;}.cls-2{fill:#bdc3c8;}.cls-3{fill:#c0402b;}</style></defs><title/><g id="Google"><g id="Gtasks"><circle class="cls-1" cx="256" cy="256" r="230"/><rect class="cls-2" height="50" rx="21.82" transform="translate(-115.66 270.26) rotate(-45)" width="346.98" x="94.91" y="249.75"/><circle class="cls-3" cx="105.42" cy="321.76" r="30"/></g></g></svg>

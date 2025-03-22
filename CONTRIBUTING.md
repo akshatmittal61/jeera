@@ -1,6 +1,6 @@
-# Contributing to Next TS Full Stack Template
+# Contributing to Jeera
 
-Loving the Next TS Full Stack Template, and want to be a part of team?
+Loving the Jeera, and want to be a part of team?
 
 We love your input! We want to make contributing to this project as easy and transparent as possible, whether it's:
 
