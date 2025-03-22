@@ -1,4 +1,4 @@
-import { T_API_METHODS, T_USER_ROLE } from "@/types";
+import { T_API_METHODS, T_USER_ROLE, T_USER_STATUS } from "@/types";
 import { getEnumeration } from "@/utils";
 
 export const USER_ROLE = getEnumeration<T_USER_ROLE>([
@@ -6,6 +6,8 @@ export const USER_ROLE = getEnumeration<T_USER_ROLE>([
 	"GUEST",
 	"MEMBER",
 ]);
+
+export const USER_STATUS = getEnumeration<T_USER_STATUS>(["INVITED", "JOINED"]);
 
 export const apiMethods = getEnumeration<T_API_METHODS>([
 	"GET",
