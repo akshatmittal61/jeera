@@ -1,3 +1,3 @@
-export * from "./auth";
-export * from "./otp";
-export * from "./user";
+export * from "./auth.repo";
+export * from "./otp.repo";
+export * from "./user.repo";
