@@ -1,4 +1,5 @@
 import {
+	AppTheme,
 	T_API_METHODS,
 	T_EMAIL_TEMPLATE,
 	T_OTP_STATUS,
@@ -24,6 +25,8 @@ export const apiMethods = getEnumeration<T_API_METHODS>([
 	"PATCH",
 	"DELETE",
 ]);
+
+export const appTheme = getEnumeration<AppTheme>(["light", "dark"]);
 
 export const emailTemplates = getEnumeration<T_EMAIL_TEMPLATE>([
 	"OTP",

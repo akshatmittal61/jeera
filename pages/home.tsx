@@ -1,5 +1,6 @@
+import { Seo } from "@/components";
 import { authRouterInterceptor } from "@/connections";
-import { routes } from "@/constants";
+import { AppSeo, routes } from "@/constants";
 import { useAuthStore } from "@/store";
 import styles from "@/styles/pages/Home.module.scss";
 import { IUser, ServerSideResult } from "@/types";
@@ -13,11 +14,10 @@ type HomePageProps = {
 const classes = stylesConfig(styles, "home");
 
 const HomePage: React.FC<HomePageProps> = () => {
-	const { user, isLoggedIn, isLoading } = useAuthStore({
-		syncOnMount: true,
-	});
+	const { user, isLoggedIn, isLoading } = useAuthStore({ syncOnMount: true });
 	return (
 		<>
+			<Seo title={`${user?.name} - Home | ${AppSeo.title}`} />
 			<main className={classes("")}>
 				<pre className="w-1/2 code overflow-hidden">
 					{isLoading
