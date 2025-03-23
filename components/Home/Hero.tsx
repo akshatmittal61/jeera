@@ -1,4 +1,5 @@
 import { AppSeo } from "@/constants";
+import { Typography } from "@/library";
 import { stylesConfig } from "@/utils";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
@@ -52,9 +53,15 @@ export const Hero: React.FC<HomeHeroProps> = () => {
 								/>
 							</div>
 							<div className={classes("-box-title")}>
-								<span className={classes("-box-title__text")}>
+								<Typography
+									as="h1"
+									family="alice"
+									size="head-1"
+									weight="bold"
+									className={classes("-box-title__text")}
+								>
 									{AppSeo.title}
-								</span>
+								</Typography>
 							</div>
 						</div>
 					</div>
