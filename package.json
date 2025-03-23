@@ -27,6 +27,7 @@
 		"jsonwebtoken": "^9.0.2",
 		"mongoose": "^8.9.6",
 		"next": "15.2.3",
+		"node-cache": "^5.1.2",
 		"nodemailer": "^6.10.0",
 		"otp-generator": "^4.0.1",
 		"react": "^19.0.0",
