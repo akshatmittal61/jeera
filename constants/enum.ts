@@ -1,4 +1,10 @@
-import { T_API_METHODS, T_USER_ROLE, T_USER_STATUS } from "@/types";
+import {
+	T_API_METHODS,
+	T_EMAIL_TEMPLATE,
+	T_OTP_STATUS,
+	T_USER_ROLE,
+	T_USER_STATUS,
+} from "@/types";
 import { getEnumeration } from "@/utils";
 
 export const USER_ROLE = getEnumeration<T_USER_ROLE>([
@@ -9,12 +15,21 @@ export const USER_ROLE = getEnumeration<T_USER_ROLE>([
 
 export const USER_STATUS = getEnumeration<T_USER_STATUS>(["INVITED", "JOINED"]);
 
+export const OTP_STATUS = getEnumeration<T_OTP_STATUS>(["PENDING", "EXPIRED"]);
+
 export const apiMethods = getEnumeration<T_API_METHODS>([
 	"GET",
 	"POST",
 	"PUT",
 	"PATCH",
 	"DELETE",
+]);
+
+export const emailTemplates = getEnumeration<T_EMAIL_TEMPLATE>([
+	"OTP",
+	"NEW_USER_ONBOARDED",
+	"USER_INVITED",
+	"USER_ADDED_TO_GROUP",
 ]);
 
 const message = Object.freeze({
