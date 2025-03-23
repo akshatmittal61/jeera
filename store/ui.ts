@@ -1,5 +1,7 @@
 import { appTheme, sideBarLinks } from "@/constants";
 import { AppNetworkStatus, AppTheme, Navigation } from "@/types";
+import { hexToRgb, Notify } from "@/utils";
+import { useEffect } from "react";
 import { create } from "zustand";
 import { createSelectors } from "./utils";
 
@@ -63,8 +65,36 @@ type UiStoreHook = (_?: Options) => ReturnType;
 export const useUiStore: UiStoreHook = (options = {}) => {
 	const store = useStore();
 
+	const syncTheme = () => {
+		const theme = localStorage.getItem("theme");
+		if (theme && ["light", "dark"].includes(theme)) {
+			store.setTheme(theme as AppTheme);
+		} else {
+			const h = window.matchMedia("(prefers-color-scheme: dark)");
+			if (h.matches) {
+				store.setTheme(appTheme.dark);
+			} else {
+				store.setTheme(appTheme.light);
+			}
+		}
+		const accentColor = getComputedStyle(document.documentElement)
+			.getPropertyValue("--accent-color-heavy")
+			.trim();
+		const accentColorRgb = hexToRgb(accentColor);
+		store.setAccentColor(accentColorRgb);
+	};
+
+	const syncNetworkStatus = () => {
+		const status = navigator.onLine ? "online" : "offline";
+		store.setNetworkStatus(status);
+		if (status === "offline") {
+			Notify.error("You are offline");
+		}
+	};
+
 	const sync = () => {
-		// TODO: implement
+		syncTheme();
+		syncNetworkStatus();
 	};
 
 	const toggleTheme = () => {
@@ -104,6 +134,13 @@ export const useUiStore: UiStoreHook = (options = {}) => {
 		}
 		store.setIsSidebarExpanded(!store.isSidebarExpanded);
 	};
+
+	useEffect(() => {
+		if (options.syncOnMount) {
+			sync();
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [options.syncOnMount]);
 
 	return {
 		...store,
