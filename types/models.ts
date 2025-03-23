@@ -1,4 +1,11 @@
-import { T_OTP_STATUS, T_USER_ROLE, T_USER_STATUS } from "./enum";
+import {
+	T_OTP_STATUS,
+	T_TASK_PRIORITY,
+	T_TASK_STATUS,
+	T_TASK_TYPE,
+	T_USER_ROLE,
+	T_USER_STATUS,
+} from "./enum";
 import { Model } from "./parser";
 
 /**
@@ -47,4 +54,76 @@ export type Otp = Model<{
 	email: string;
 	otp: string;
 	status: T_OTP_STATUS;
+}>;
+
+/**
+ * Project model
+ * @param {string} title - Title of the project
+ * @param {string} description - Description of the project (optional)
+ * @param {string} owner - Id of the user who owns the project (References User model)
+ * @param {string} identifier - Identifier of the project
+ * @param {string} start - Start date of the project (optional)
+ * @param {string} end - End date of the project (optional)
+ */
+export type Project = Model<{
+	title: string;
+	description?: string;
+	owner: string;
+	identifier: string;
+	start?: string;
+	end?: string;
+}>;
+
+/**
+ * Sprint model
+ * @param {string} title - Title of the sprint
+ * @param {string} project - Id of the project (References Project model)
+ * @param {string} start - Start date of the sprint
+ * @param {string} end - End date of the sprint
+ * @param {number} count - Count of the sprint
+ * @param {string} meet - Meet link of the sprint (optional)
+ * @param {string} leader - Id of the leader of the sprint (References User model)
+ */
+export type Sprint = Model<{
+	title: string;
+	project: string;
+	start: string;
+	end: string;
+	count: number;
+	meet?: string;
+	leader: string;
+}>;
+
+/**
+ * Task model
+ * @param {string} title - Title of the task
+ * @param {string} identifier - Identifier of the task
+ * @param {string} status - Status of the task (Todo, Doing, Done)
+ * @param {string} priority - Priority of the task (Low, Medium, High)
+ * @param {string} type - Type of the task (Task, Bug, Feature)
+ * @param {string} storyPoint - Story point of the task (optional)
+ * @param {string} description - Description of the task (optional)
+ * @param {string} assignee - Id of the user who is assigned to the task (References User model) (optional)
+ * @param {string} reportee - Id of the user to whom report the task (References User model) (optional)
+ * @param {string} sprint - Id of the sprint (References Sprint model) (optional)
+ * @param {string} project - Id of the project (References Project model)
+ * @param {string} createdBy - Id of the user who created the task (References User model)
+ * @param {string} start - Start date of the task (optional)
+ * @param {string} end - End date of the task (optional)
+ */
+export type Task = Model<{
+	title: string;
+	identifier: string;
+	status: T_TASK_STATUS;
+	priority: T_TASK_PRIORITY;
+	type: T_TASK_TYPE;
+	storyPoint?: number;
+	description?: string;
+	assignee?: string;
+	reportee?: string;
+	sprint?: string;
+	project: string;
+	createdBy: string;
+	start?: string;
+	end?: string;
 }>;

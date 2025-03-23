@@ -3,6 +3,9 @@ import {
 	T_API_METHODS,
 	T_EMAIL_TEMPLATE,
 	T_OTP_STATUS,
+	T_TASK_PRIORITY,
+	T_TASK_STATUS,
+	T_TASK_TYPE,
 	T_USER_ROLE,
 	T_USER_STATUS,
 } from "@/types";
@@ -15,8 +18,24 @@ export const USER_ROLE = getEnumeration<T_USER_ROLE>([
 ]);
 
 export const USER_STATUS = getEnumeration<T_USER_STATUS>(["INVITED", "JOINED"]);
-
 export const OTP_STATUS = getEnumeration<T_OTP_STATUS>(["PENDING", "EXPIRED"]);
+export const TASK_STATUS = getEnumeration<T_TASK_STATUS>([
+	"BACKLOG",
+	"TODO",
+	"INPROGRESS",
+	"DONE",
+]);
+export const TASK_PRIORITY = getEnumeration<T_TASK_PRIORITY>([
+	"LOW",
+	"MEDIUM",
+	"HIGH",
+	"SEVERE",
+]);
+export const TASK_TYPE = getEnumeration<T_TASK_TYPE>([
+	"BUG",
+	"FEATURE",
+	"TASK",
+]);
 
 export const apiMethods = getEnumeration<T_API_METHODS>([
 	"GET",
