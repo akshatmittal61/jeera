@@ -98,10 +98,9 @@ export class OAuthService {
 				"Auth failed, please try again or contact support"
 			);
 		}
-		const { accessToken, refreshToken } = AuthService.generateTokens(
-			`${foundAuthMapping.id}`
-		);
-		Logger.debug("Generated tokens", { accessToken, refreshToken });
-		return { accessToken, refreshToken, user: foundAuthMapping.user };
+		const tokens = AuthService.generateTokens(`${foundAuthMapping.id}`);
+		Logger.debug("Generated tokens", tokens);
+		const cookies = AuthService.getCookies(tokens);
+		return { cookies, user: foundAuthMapping.user };
 	}
 }

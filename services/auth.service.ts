@@ -1,7 +1,7 @@
 import { jwtSecret } from "@/config";
 import { Logger } from "@/log";
 import { authRepo } from "@/repo";
-import { AuthResponse, IAuthMapping, User } from "@/types";
+import { AuthResponse, IAuthMapping, Tokens, User } from "@/types";
 import { genericParse, getNonEmptyString } from "@/utils";
 import jwt, { TokenExpiredError } from "jsonwebtoken";
 
@@ -49,7 +49,7 @@ export class AuthService {
 	public static async getAuthenticatedUser({
 		accessToken,
 		refreshToken,
-	}: Omit<AuthResponse, "user">): Promise<AuthResponse | null> {
+	}: Tokens): Promise<(AuthResponse & Tokens) | null> {
 		try {
 			const decodedAccessToken: any = jwt.verify(
 				accessToken,
@@ -65,8 +65,13 @@ export class AuthService {
 				await AuthService.getUserByAuthMappingId(authMappingId);
 			if (!user) return null;
 			Logger.debug("Found user", user);
+			const cookies = AuthService.getCookies({
+				accessToken,
+				refreshToken,
+			});
 			return {
 				user,
+				cookies,
 				accessToken,
 				refreshToken,
 			};
@@ -92,10 +97,15 @@ export class AuthService {
 			Logger.debug("Found user", user);
 			const newAccessToken =
 				AuthService.generateAccessToken(authMappingId);
+			const cookies = AuthService.getCookies({
+				accessToken: newAccessToken,
+				refreshToken,
+			});
 			return {
 				user,
 				accessToken: newAccessToken,
 				refreshToken,
+				cookies,
 			};
 		} catch {
 			return null;
@@ -119,5 +129,62 @@ export class AuthService {
 			refreshToken: AuthService.generateRefreshToken(id),
 			accessToken: AuthService.generateAccessToken(id),
 		};
+	}
+	public static getCookies({
+		accessToken,
+		refreshToken,
+		logout,
+	}: {
+		accessToken: string | null;
+		refreshToken: string | null;
+		logout?: boolean;
+	}) {
+		const cookiesToSet = [];
+		if (logout) {
+			cookiesToSet.push({
+				name: "accessToken",
+				value: "",
+				maxAge: -1,
+			});
+			cookiesToSet.push({
+				name: "refreshToken",
+				value: "",
+				maxAge: -1,
+			});
+			return cookiesToSet;
+		}
+		if (accessToken) {
+			cookiesToSet.push({
+				name: "accessToken",
+				value: accessToken,
+				maxAge: 1 * 60 * 1000,
+			});
+		}
+		if (refreshToken) {
+			cookiesToSet.push({
+				name: "refreshToken",
+				value: refreshToken,
+				maxAge: 7 * 24 * 60 * 60 * 1000,
+			});
+		}
+		return cookiesToSet;
+	}
+	public static getUpdatedCookies(old: Tokens, newTokens: Tokens) {
+		const cookiesToSet = [];
+		if (old.accessToken !== newTokens.accessToken) {
+			cookiesToSet.push({
+				name: "accessToken",
+				value: newTokens.accessToken,
+				maxAge: 1 * 60 * 1000,
+			});
+		}
+		if (old.refreshToken !== newTokens.refreshToken) {
+			cookiesToSet.push({
+				name: "refreshToken",
+				value: newTokens.refreshToken,
+				maxAge: 7 * 24 * 60 * 60 * 1000,
+			});
+		}
+		return cookiesToSet;
 	}
 }
