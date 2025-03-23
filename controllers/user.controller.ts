@@ -6,6 +6,6 @@ export class UserController {
 	public static async getUserByEmail(req: ApiRequest, res: ApiResponse) {
 		const email = genericParse(getNonEmptyString, req.query.email);
 		const user = await UserService.getUserByEmail(email);
-		return ApiSuccess(res).send(user);
+		return new ApiSuccess(res).send(user);
 	}
 }
