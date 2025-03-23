@@ -55,6 +55,7 @@ type Options = {
 
 type ReturnType = Store & {
 	sync: () => void;
+	syncNetworkStatus: () => void;
 	toggleTheme: () => void;
 	toggleSidebar: () => void;
 	setOpenSidebar: (_: boolean) => void;
@@ -145,6 +146,7 @@ export const useUiStore: UiStoreHook = (options = {}) => {
 	return {
 		...store,
 		sync,
+		syncNetworkStatus,
 		toggleTheme,
 		toggleSidebar,
 		setOpenSidebar,

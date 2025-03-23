@@ -11,4 +11,6 @@ export const routes = Object.freeze({
 	CALENDAR: "/calendar",
 	TASK: (id: string) => `/tasks/${id}`,
 	SPRINT: (id: string) => `/sprints/${id}`,
+	ERROR: "/500",
+	PROFILE: "/profile",
 });
