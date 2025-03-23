@@ -1,9 +1,26 @@
-import { Toaster } from "react-hot-toast";
 import { AppSeo } from "@/constants";
-import React from "react";
+import { useAuthStore } from "@/store";
+import { IUser } from "@/types";
+import React, { useEffect } from "react";
+import { Toaster } from "react-hot-toast";
 import { Seo } from "./Seo";
+import { Logger } from "@/log";
 
-export const Wrapper: React.FC<any> = ({ children }) => {
+interface WrapperProps {
+	children: React.ReactNode;
+	user?: IUser;
+}
+
+export const Wrapper: React.FC<WrapperProps> = ({ children, user }) => {
+	const { setUser } = useAuthStore();
+	useEffect(() => {
+		Logger.debug("Setting user", user);
+		if (user) {
+			setUser(user);
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [user]);
+
 	return (
 		<>
 			<Seo

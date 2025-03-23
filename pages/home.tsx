@@ -19,11 +19,13 @@ const HomePage: React.FC<HomePageProps> = () => {
 	return (
 		<>
 			<main className={classes("")}>
-				{isLoading
-					? "Loading..."
-					: isLoggedIn
-						? JSON.stringify(user, null, 2)
-						: "Not logged in"}
+				<pre className="w-1/2 code overflow-hidden">
+					{isLoading
+						? "Loading..."
+						: isLoggedIn
+							? JSON.stringify(user, null, 2)
+							: "Not logged in"}
+				</pre>
 			</main>
 		</>
 	);
