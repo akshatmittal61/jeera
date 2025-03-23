@@ -3,8 +3,8 @@ import { Logger } from "@/log";
 import { AuthService } from "@/services";
 import { ApiController, ApiRequest, ApiResponse } from "@/types";
 import {
-	ApiCookies,
 	ApiFailure,
+	ApiSuccess,
 	genericParse,
 	getNonEmptyString,
 } from "@/utils";
@@ -31,7 +31,7 @@ export class ServerMiddleware {
 					refreshToken,
 				});
 				if (!authReponse) {
-					return ApiFailure(res).send(
+					return new ApiFailure(res).send(
 						HTTP.message.UNAUTHORIZED,
 						HTTP.status.UNAUTHORIZED
 					);
@@ -50,13 +50,13 @@ export class ServerMiddleware {
 					}
 				);
 				if (cookies.length > 0) {
-					ApiCookies(res).set(cookies);
+					new ApiSuccess(res).cookies(cookies);
 				}
 				req.user = user;
 				return next(req, res);
 			} catch (error) {
 				Logger.error(error);
-				return ApiFailure(res).send(
+				return new ApiFailure(res).send(
 					HTTP.message.UNAUTHORIZED,
 					HTTP.status.UNAUTHORIZED
 				);
@@ -73,7 +73,7 @@ export class ServerMiddleware {
 				return next(req, res);
 			} catch (error) {
 				Logger.error(error);
-				return ApiFailure(res).send(
+				return new ApiFailure(res).send(
 					HTTP.message.FORBIDDEN,
 					HTTP.status.FORBIDDEN
 				);

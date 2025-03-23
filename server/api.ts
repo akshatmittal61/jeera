@@ -1,7 +1,7 @@
 import { apiMethods, dbUri, HTTP } from "@/constants";
 import { ApiError, DbConnectionError, ParserSafetyError } from "@/errors";
 import { Logger } from "@/log";
-import { ServerMiddleware } from "@/middlewares";
+import { ServerMiddleware } from "@/server";
 import {
 	ApiController,
 	ApiControllers,
@@ -13,7 +13,7 @@ import {
 } from "@/types";
 import { ApiFailure } from "@/utils";
 import { NextApiHandler } from "next";
-import { DatabaseManager } from ".";
+import { DatabaseManager } from "../connections";
 
 export class ApiRoute {
 	// Options for API Wrapper
@@ -145,19 +145,22 @@ export class ApiRoute {
 				}
 			} catch (error: any) {
 				if (error instanceof ApiError) {
-					return ApiFailure(res).send(error.message, error.status);
+					return new ApiFailure(res).send(
+						error.message,
+						error.status
+					);
 				} else if (error instanceof DbConnectionError) {
-					return ApiFailure(res).send(
+					return new ApiFailure(res).send(
 						error.message || "Unable to connect to database",
 						HTTP.status.SERVICE_UNAVAILABLE
 					);
 				} else if (error instanceof ParserSafetyError) {
-					return ApiFailure(res).send(
+					return new ApiFailure(res).send(
 						error.message || HTTP.message.BAD_REQUEST,
 						HTTP.status.BAD_REQUEST
 					);
 				} else {
-					return ApiFailure(res).send(
+					return new ApiFailure(res).send(
 						error.message || HTTP.message.INTERNAL_SERVER_ERROR,
 						HTTP.status.INTERNAL_SERVER_ERROR
 					);

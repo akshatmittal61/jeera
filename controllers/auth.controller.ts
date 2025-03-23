@@ -1,9 +1,8 @@
 import { HTTP } from "@/constants";
 import { Logger } from "@/log";
 import { AuthService, OAuthService, OtpService } from "@/services";
-import { ApiRequest, ApiResponse } from "@/types";
+import { ApiRequest, ApiResponse, IUser } from "@/types";
 import {
-	ApiCookies,
 	ApiFailure,
 	ApiSuccess,
 	genericParse,
@@ -14,7 +13,7 @@ export class AuthController {
 	public static async verifyOAuthSignIn(req: ApiRequest, res: ApiResponse) {
 		const code = genericParse(getNonEmptyString, req.body.code);
 		const data = await OAuthService.verifyOAuthSignIn(code);
-		return ApiSuccess(res).send(data);
+		return new ApiSuccess<string>(res).send(data);
 	}
 	public static async continueOAuthWithGoogle(
 		req: ApiRequest,
@@ -24,15 +23,14 @@ export class AuthController {
 		const { user, cookies } =
 			await OAuthService.continueOAuthWithGoogle(validatorToken);
 		Logger.debug("User logged in with Google", user, cookies);
-		if (cookies.length > 0) {
-			ApiCookies(res).set(cookies);
-		}
-		return ApiSuccess(res).send(user);
+		return new ApiSuccess<IUser>(res).cookies(cookies).send(user);
 	}
 	public static async requestOtp(req: ApiRequest, res: ApiResponse) {
 		const email = getNonEmptyString(req.body.email);
 		await OtpService.requestOtpWithEmail(email);
-		return ApiSuccess(res).send(null, "OTP sent successfully");
+		return new ApiSuccess<null>(res)
+			.message("OTP sent successfully")
+			.send();
 	}
 	public static async verifyOtp(req: ApiRequest, res: ApiResponse) {
 		const email = getNonEmptyString(req.body.email);
@@ -42,20 +40,23 @@ export class AuthController {
 			email,
 			otp
 		);
-		if (cookies.length > 0) {
-			ApiCookies(res).set(cookies);
-		}
 		const responseStatus = isNew
 			? HTTP.status.CREATED
 			: HTTP.status.SUCCESS;
-		return ApiSuccess(res).send(user, HTTP.message.SUCCESS, responseStatus);
+		return new ApiSuccess<IUser>(res)
+			.status(responseStatus)
+			.cookies(cookies)
+			.data(user);
 	}
 	public static async verifyLoggedInUser(req: ApiRequest, res: ApiResponse) {
 		const user = req.user;
 		if (!user) {
-			return ApiFailure(res).send("Please login to continue");
+			return new ApiFailure(res).send(
+				HTTP.message.UNAUTHORIZED,
+				HTTP.status.UNAUTHORIZED
+			);
 		}
-		return ApiSuccess(res).send(user);
+		return new ApiSuccess<IUser>(res).data(user);
 	}
 	public static async logout(_: ApiRequest, res: ApiResponse) {
 		const cookies = AuthService.getCookies({
@@ -63,9 +64,6 @@ export class AuthController {
 			refreshToken: null,
 			logout: true,
 		});
-		if (cookies.length > 0) {
-			ApiCookies(res).set(cookies);
-		}
-		return ApiSuccess(res).send();
+		return new ApiSuccess<null>(res).cookies(cookies).send();
 	}
 }
