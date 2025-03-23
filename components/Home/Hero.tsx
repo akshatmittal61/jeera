@@ -1,8 +1,10 @@
-import { AppSeo } from "@/constants";
-import { Typography } from "@/library";
+import { AppSeo, routes } from "@/constants";
+import { Button, Typography } from "@/library";
 import { stylesConfig } from "@/utils";
 import Image from "next/image";
+import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
+import { AiOutlineArrowRight } from "react-icons/ai";
 import styles from "./styles.module.scss";
 
 type HomeHeroProps = {};
@@ -10,6 +12,7 @@ type HomeHeroProps = {};
 const classes = stylesConfig(styles, "home-hero");
 
 export const Hero: React.FC<HomeHeroProps> = () => {
+	const router = useRouter();
 	const [scrolled, setScrolled] = useState(false);
 	useEffect(() => {
 		const vh = window.innerHeight / 100;
@@ -62,6 +65,16 @@ export const Hero: React.FC<HomeHeroProps> = () => {
 								>
 									{AppSeo.title}
 								</Typography>
+								<Button
+									size="large"
+									icon={<AiOutlineArrowRight />}
+									iconPosition="right"
+									onClick={() => {
+										router.push(routes.LOGIN);
+									}}
+								>
+									Get Started Today
+								</Button>
 							</div>
 						</div>
 					</div>
