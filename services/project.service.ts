@@ -1,6 +1,6 @@
 import { HTTP } from "@/constants";
 import { ApiError } from "@/errors";
-import { projectRepo, sprintRepo, taskRepo, userRepo } from "@/repo";
+import { projectRepo, userRepo } from "@/repo";
 import { CreateModel, IProject, Project } from "@/types";
 
 export class ProjectService {
@@ -13,29 +13,7 @@ export class ProjectService {
 	public static async getProjectsForUser(
 		userId: string
 	): Promise<Array<IProject>> {
-		const [ownedProjects, tasks, sprints] = await Promise.all([
-			projectRepo.fetchProjectsOwnedByUser(userId),
-			taskRepo.fetchTasksForUser(userId),
-			sprintRepo.fetchSprintsForUser(userId),
-		]);
-		const projectsMap = new Map<string, IProject>();
-		const allProjects = [
-			...(ownedProjects || []),
-			...tasks.map((task) => task.project),
-			...sprints.map((sprint) => sprint.project),
-		].filter((obj) => obj != null);
-		allProjects.forEach((project) => {
-			if (!project) return;
-			if (!projectsMap.has(project.id)) {
-				projectsMap.set(project.id, project);
-			}
-		});
-		let projects: Array<IProject> = [];
-		for (const project of projectsMap.values()) {
-			projects.push(project);
-		}
-		if (!projects) return [];
-		return projects;
+		return await projectRepo.fetchProjectsForUser(userId);
 	}
 	public static async createProject(
 		body: CreateModel<Project>,
