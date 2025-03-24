@@ -98,6 +98,21 @@ class TaskRepo extends BaseRepo<Task, ITask> {
 			.populate("project sprint assignee reportee createdBy");
 		return this.parser(res);
 	}
+	public async fetchTasksForUser(userId: string): Promise<Array<ITask>> {
+		const res = await this.model
+			.find<Task>({
+				$or: [
+					{ assignee: userId },
+					{ reportee: userId },
+					{ createdBy: userId },
+				],
+			})
+			.populate("project sprint assignee reportee createdBy")
+			.sort({ createdAt: -1 });
+		const parsedRes = res.map(this.parser).filter((obj) => obj != null);
+		if (parsedRes.length > 0) return parsedRes;
+		return [];
+	}
 }
 
 export const taskRepo = new TaskRepo();

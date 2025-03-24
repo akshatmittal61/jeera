@@ -24,4 +24,10 @@ export const ProjectSchema = {
 	end: {
 		type: Date,
 	},
+	members: [
+		{
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "User",
+		},
+	],
 };

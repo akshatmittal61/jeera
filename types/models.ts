@@ -64,6 +64,7 @@ export type Otp = Model<{
  * @param {string} identifier - Identifier of the project
  * @param {string} start - Start date of the project (optional)
  * @param {string} end - End date of the project (optional)
+ * @param {Array<string>} members - Ids of the members of the project (References User model)
  */
 export type Project = Model<{
 	title: string;
@@ -72,6 +73,7 @@ export type Project = Model<{
 	identifier: string;
 	start?: string;
 	end?: string;
+	members: Array<string>;
 }>;
 
 /**

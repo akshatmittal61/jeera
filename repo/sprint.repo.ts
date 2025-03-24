@@ -85,6 +85,26 @@ class SprintRepo extends BaseRepo<Sprint, ISprint> {
 			.populate("leader project");
 		return this.parser(res);
 	}
+	public async fetchSprintsForProject(
+		projectId: string
+	): Promise<Array<ISprint>> {
+		const res = await this.model
+			.find<Sprint>({ project: projectId })
+			.populate("leader project")
+			.sort({ createdAt: -1 });
+		const parsedRes = res.map(this.parser).filter((obj) => obj != null);
+		if (parsedRes.length > 0) return parsedRes;
+		return [];
+	}
+	public async fetchSprintsForUser(userId: string): Promise<Array<ISprint>> {
+		const res = await this.model
+			.find<Sprint>({ leader: userId })
+			.populate("leader project")
+			.sort({ createdAt: -1 });
+		const parsedRes = res.map(this.parser).filter((obj) => obj != null);
+		if (parsedRes.length > 0) return parsedRes;
+		return [];
+	}
 }
 
 export const sprintRepo = new SprintRepo();
