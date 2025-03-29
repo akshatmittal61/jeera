@@ -1,9 +1,9 @@
-import { CHECK_INTERVAL, TTL_SECONDS } from "@/constants";
+import { cacheParameter, CHECK_INTERVAL, TTL_SECONDS } from "@/constants";
 import { Logger } from "@/log";
-import { CacheParameter } from "@/types";
+import { CacheKeyGenerator, CacheParameter } from "@/types";
 import NodeCache from "node-cache";
 
-class Cache {
+class CacheService {
 	private cache: NodeCache;
 
 	constructor() {
@@ -13,25 +13,26 @@ class Cache {
 			useClones: false,
 			maxKeys: 2000,
 		});
+		global.cache = this;
 	}
 
-	set(key: string, value: any, ttl: number = TTL_SECONDS) {
+	public set(key: string, value: any, ttl: number = TTL_SECONDS) {
 		this.cache.set(key, value, ttl);
 	}
 
-	get(key: string) {
+	public get(key: string) {
 		return this.cache.get(key);
 	}
 
-	getAll() {
+	public getAll() {
 		return this.cache.keys();
 	}
 
-	del(key: string) {
+	public del(key: string) {
 		this.cache.del(key);
 	}
 
-	flushAll() {
+	public flushAll() {
 		this.cache.flushAll();
 	}
 
@@ -43,7 +44,7 @@ class Cache {
 	 * @param {number} [ttl=TTL_SECONDS] - The time to live for the cached value.
 	 * @return {Promise<T>} The cached or newly retrieved value.
 	 */
-	async fetch<T>(key: string, callback: () => Promise<T>): Promise<T> {
+	public async fetch<T>(key: string, callback: () => Promise<T>): Promise<T> {
 		if (
 			typeof key === "string" &&
 			key.length > 0 &&
@@ -64,25 +65,38 @@ class Cache {
 		}
 	}
 
-	invalidate(key: string) {
+	public invalidate(key: string) {
 		if (this.cache.has(key)) {
 			this.cache.del(key);
+		}
+	}
+	public getKey<T extends CacheParameter>(
+		parameter: T,
+		data: CacheKeyGenerator<T>
+	): string {
+		if (parameter === cacheParameter.USER) {
+			if ("token" in data) {
+				return `user:${data.token}`;
+			}
+			throw new Error("Invalid data: token is missing");
+		} else if (
+			parameter === cacheParameter.PROJECT ||
+			parameter === cacheParameter.SPRINT ||
+			parameter === cacheParameter.TASK
+		) {
+			if ("id" in data) {
+				return `cache:${parameter}:${data.id}`;
+			}
+			throw new Error("Invalid data: id is missing");
+		} else {
+			return `cache:${parameter}:${JSON.stringify(data)}`;
 		}
 	}
 }
 
 declare global {
 	// eslint-disable-next-line no-unused-vars
-	var cache: Cache;
+	var cache: CacheService;
 }
 
-export const cache = global.cache || new Cache();
-
-export const getCacheKey = (parameter: CacheParameter, data: any) => {
-	switch (parameter) {
-		case "USER":
-			return `user:${data.token}`;
-		default:
-			return `cache:${parameter}:${JSON.stringify(data)}`;
-	}
-};
+export const Cache = global.cache || new CacheService();

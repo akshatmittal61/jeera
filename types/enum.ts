@@ -1,4 +1,9 @@
-export type CacheParameter = "USER";
+export type CacheParameter = "USER" | "PROJECT" | "SPRINT" | "TASK";
+export type CacheKeyGenerator<T extends CacheParameter> = T extends "USER"
+	? { token: string }
+	: T extends "PROJECT" | "SPRINT" | "TASK"
+		? { id: string }
+		: never;
 
 export type T_USER_STATUS = "JOINED" | "INVITED";
 export type T_USER_ROLE = "ADMIN" | "MEMBER" | "GUEST";

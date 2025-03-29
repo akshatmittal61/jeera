@@ -1,4 +1,5 @@
-import { emailTemplates, HTTP } from "@/constants";
+import { Cache } from "@/cache";
+import { cacheParameter, emailTemplates, HTTP } from "@/constants";
 import { ApiError } from "@/errors";
 import { projectRepo, userRepo } from "@/repo";
 import { CreateModel, IProject, IUser, Project } from "@/types";
@@ -7,9 +8,12 @@ import { sendBulkEmailTemplate } from "./email";
 
 export class ProjectService {
 	public static async getProjectDetails(
-		projectId: string
+		id: string
 	): Promise<IProject | null> {
-		const project = await projectRepo.findById(projectId);
+		const project = await Cache.fetch(
+			Cache.getKey(cacheParameter.PROJECT, { id }),
+			() => projectRepo.findById(id)
+		);
 		return project;
 	}
 	public static async getProjectsForUser(
@@ -98,6 +102,10 @@ export class ProjectService {
 			userIds: body.members,
 			invitedBy: user,
 		});
+		Cache.set(
+			Cache.getKey(cacheParameter.PROJECT, { id: project.id }),
+			project
+		);
 		return project;
 	}
 }
