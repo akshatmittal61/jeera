@@ -1,3 +1,4 @@
+import { fallbackAssets } from "@/constants";
 import mongoose from "mongoose";
 
 export const ProjectSchema = {
@@ -8,10 +9,9 @@ export const ProjectSchema = {
 	description: {
 		type: String,
 	},
-	owner: {
+	leader: {
 		type: mongoose.Schema.Types.ObjectId,
 		ref: "User",
-		required: true,
 	},
 	identifier: {
 		type: String,
@@ -30,4 +30,13 @@ export const ProjectSchema = {
 			ref: "User",
 		},
 	],
+	icon: {
+		type: String,
+		default: fallbackAssets.projectIcon,
+	},
+	author: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref: "User",
+		required: true,
+	},
 };

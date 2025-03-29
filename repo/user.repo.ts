@@ -8,6 +8,12 @@ class UserRepo extends BaseRepo<User, IUser> {
 		const res = await this.model.findOne({ email });
 		return this.parser(res);
 	}
+	public async findMultipleByIds(
+		ids: Array<string>
+	): Promise<Array<IUser | null>> {
+		const res = await this.model.find({ _id: { $in: ids } });
+		return res.map(this.parser);
+	}
 }
 
 export const userRepo = new UserRepo();

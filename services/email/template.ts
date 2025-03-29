@@ -1,6 +1,6 @@
-import { googleEmailConfig } from "../../config";
-import { emailTemplates, frontendBaseUrl } from "../../constants";
-import { T_EMAIL_TEMPLATE } from "../../types";
+import { googleEmailConfig } from "@/config";
+import { AppSeo, emailTemplates, frontendBaseUrl, routes } from "@/constants";
+import { T_EMAIL_TEMPLATE } from "@/types";
 
 const getEmailTemplateHTML = (
 	title: string = "",
@@ -414,7 +414,7 @@ ${
       <td style="overflow-wrap:break-word;word-break:break-word;padding:0px 10px 20px;font-family:arial,helvetica,sans-serif;" align="left">
         
   <div style="font-size: 14px; color: #ffffff; line-height: 140%; text-align: center; word-wrap: break-word;">
-    <p style="font-size: 14px; line-height: 140%;">To connect, please contact: <span style="color: #ffffff; line-height: 19.6px;"><a rel="noopener" href="mailto:${googleEmailConfig.email}?subject=Query%20regarding%20Settle%20It" target="_blank" style="color: #ffffff;">${googleEmailConfig.email}</a></span></p>
+    <p style="font-size: 14px; line-height: 140%;">To connect, please contact: <span style="color: #ffffff; line-height: 19.6px;"><a rel="noopener" href="mailto:${googleEmailConfig.email}?subject=${`Query regarding ${AppSeo.title}`.split(" ").join("%2f")} target="_blank" style="color: #ffffff;">${googleEmailConfig.email}</a></span></p>
   </div>
 
       </td>
@@ -468,12 +468,12 @@ export const getEmailTemplate = (template: T_EMAIL_TEMPLATE, data: any) => {
 				"Login",
 				`${frontendBaseUrl}/login`
 			);
-		case emailTemplates.USER_ADDED_TO_GROUP:
+		case emailTemplates.USER_ADDED_TO_PROJECT:
 			return getEmailTemplateHTML(
-				`Added to ${data.group.name}`,
-				`<a href="mailto:${data.invitedBy.email}" style="color:inherit;text-decoration:none">${data.invitedBy.name}</a> has added you to ${data.group.name}.`,
-				"View Group",
-				`${frontendBaseUrl}/group/${data.group.id}`
+				`Added to ${data.project.title}`,
+				`<a href="mailto:${data.invitedBy.email}" style="color:inherit;text-decoration:none">${data.invitedBy.name}</a> has added you to ${data.project.title}.`,
+				"View Project",
+				`${frontendBaseUrl}${routes.PROJECT(data.project.id)}`
 			);
 		default:
 			return "";

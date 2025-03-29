@@ -2,6 +2,7 @@ import { googleEmailConfig } from "@/config";
 import { T_EMAIL_TEMPLATE } from "@/types";
 import { createTransport } from "nodemailer";
 import { getEmailTemplate } from "./template";
+import { AppSeo } from "@/constants";
 
 export const sendEmailService = async (
 	to: string,
@@ -18,7 +19,7 @@ export const sendEmailService = async (
 	const smtpTransport = createTransport(transportOptions);
 	const mailOptions = {
 		from: {
-			name: "Settle It!",
+			name: AppSeo.title || "",
 			address: googleEmailConfig.email,
 		},
 		to,
@@ -42,7 +43,10 @@ export const sendBulkEmailService = async (
 	};
 	const smtpTransport = createTransport(transportOptions);
 	await smtpTransport.sendMail({
-		from: googleEmailConfig.email,
+		from: {
+			name: AppSeo.title || "",
+			address: googleEmailConfig.email,
+		},
 		bcc: to,
 		subject,
 		html,

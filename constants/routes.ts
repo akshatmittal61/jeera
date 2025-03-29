@@ -9,6 +9,8 @@ export const routes = Object.freeze({
 	BOARD: "/board",
 	SPRINTS: "/sprints",
 	CALENDAR: "/calendar",
+	PROJECTS: "/projects",
+	PROJECT: (id: string) => `/projects/${id}`,
 	TASK: (id: string) => `/tasks/${id}`,
 	SPRINT: (id: string) => `/sprints/${id}`,
 	ERROR: "/500",

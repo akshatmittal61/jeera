@@ -8,6 +8,6 @@ export const serviceName = service;
 
 export const fallbackAssets = Object.freeze({
 	avatar: `${frontendBaseUrl}/vectors/user.svg`,
-	groupIcon: `${frontendBaseUrl}/images/group-icon.png`,
+	projectIcon: `${frontendBaseUrl}/images/project-icon.png`,
 	banner: `${frontendBaseUrl}/images/banner.png`,
 });

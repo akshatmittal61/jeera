@@ -11,6 +11,6 @@ export type T_EMAIL_TEMPLATE =
 	| "OTP"
 	| "NEW_USER_ONBOARDED"
 	| "USER_INVITED"
-	| "USER_ADDED_TO_GROUP";
+	| "USER_ADDED_TO_PROJECT";
 
 export type GOOGLE_MAIL_SERVICE_KEYS = "email" | "password";

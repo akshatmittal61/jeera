@@ -2,8 +2,9 @@ import { AuthMapping, Project, Sprint, Task, User } from "./models";
 
 export type IUser = User;
 export type IAuthMapping = Omit<AuthMapping, "user"> & { user: IUser | null };
-export type IProject = Omit<Project, "owner" | "members"> & {
-	owner: IUser;
+export type IProject = Omit<Project, "leader" | "author" | "members"> & {
+	leader?: IUser;
+	author: IUser;
 	members: Array<IUser>;
 };
 export type ISprint = Omit<Sprint, "leader" | "project"> & {

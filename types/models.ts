@@ -60,20 +60,24 @@ export type Otp = Model<{
  * Project model
  * @param {string} title - Title of the project
  * @param {string} description - Description of the project (optional)
- * @param {string} owner - Id of the user who owns the project (References User model)
+ * @param {string} leader - Id of the user who owns the project (References User model) (optional)
  * @param {string} identifier - Identifier of the project
  * @param {string} start - Start date of the project (optional)
  * @param {string} end - End date of the project (optional)
  * @param {Array<string>} members - Ids of the members of the project (References User model)
+ * @param {string} author - Id of the user who created the project (References User model)
+ * @param {string} icon - Icon of the project (optional)
  */
 export type Project = Model<{
 	title: string;
 	description?: string;
-	owner: string;
+	leader?: string;
 	identifier: string;
 	start?: string;
 	end?: string;
 	members: Array<string>;
+	author: string;
+	icon?: string;
 }>;
 
 /**

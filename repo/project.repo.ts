@@ -15,9 +15,13 @@ class ProjectRepo extends BaseRepo<Project, IProject> {
 	public parser(input: Project | null): IProject | null {
 		const res = super.parser(input);
 		if (!res) return null;
-		const user = getObjectFromMongoResponse<IUser>(res.owner);
+		const user = getObjectFromMongoResponse<IUser>(res.author);
 		if (user) {
-			res.owner = user;
+			res.author = user;
+		}
+		const leader = getObjectFromMongoResponse<IUser>(res.leader);
+		if (leader) {
+			res.leader = leader;
 		}
 		const members = res.members
 			.map(getObjectFromMongoResponse<IUser>)
@@ -32,14 +36,14 @@ class ProjectRepo extends BaseRepo<Project, IProject> {
 	): Promise<IProject | null> {
 		const res = await this.model
 			.findOne<Project>(query)
-			.populate("owner members");
+			.populate("owner leader members");
 		return this.parser(res);
 	}
 	public async findById(id: string): Promise<IProject | null> {
 		try {
 			const res = await this.model
 				.findById<Project>(id)
-				.populate("owner members");
+				.populate("owner leader members");
 			return this.parser(res);
 		} catch (error: any) {
 			if (error.kind === "ObjectId") return null;
@@ -51,7 +55,7 @@ class ProjectRepo extends BaseRepo<Project, IProject> {
 	): Promise<Array<IProject> | null> {
 		const res = await this.model
 			.find<Project>(query)
-			.populate("owner members");
+			.populate("owner leader members");
 		const parsedRes = res.map(this.parser).filter((obj) => obj != null);
 		if (parsedRes.length === 0) return null;
 		return parsedRes;
@@ -59,7 +63,7 @@ class ProjectRepo extends BaseRepo<Project, IProject> {
 	public async findAll(): Promise<Array<IProject>> {
 		const res = await this.model
 			.find<Project>()
-			.populate("owner members")
+			.populate("owner leader members")
 			.sort({ createdAt: -1 });
 		const parsedRes = res.map(this.parser).filter((obj) => obj != null);
 		if (parsedRes.length > 0) return parsedRes;
@@ -68,7 +72,7 @@ class ProjectRepo extends BaseRepo<Project, IProject> {
 	public async create(body: CreateModel<Project>): Promise<IProject> {
 		const res = await this.model.create<CreateModel<Project>>(body);
 		return getNonNullValue(
-			this.parser(await res.populate("owner members"))
+			this.parser(await res.populate("owner leader members"))
 		);
 	}
 	public async update(
@@ -78,14 +82,14 @@ class ProjectRepo extends BaseRepo<Project, IProject> {
 		const filter = query.id ? { _id: query.id } : query;
 		const res = await this.model
 			.findOneAndUpdate<Project>(filter, update, { new: true })
-			.populate("owner members");
+			.populate("owner leader members");
 		return this.parser(res);
 	}
 	public async remove(query: FilterQuery<Project>): Promise<IProject | null> {
 		const filter = query.id ? { _id: query.id } : query;
 		const res = await this.model
 			.findOneAndDelete<Project>(filter)
-			.populate("owner members");
+			.populate("owner leader members");
 		return this.parser(res);
 	}
 	public async fetchProjectsOwnedByUser(
@@ -93,7 +97,7 @@ class ProjectRepo extends BaseRepo<Project, IProject> {
 	): Promise<Array<IProject>> {
 		const res = await this.model
 			.find<Project>({ owner: userId })
-			.populate("owner members")
+			.populate("owner leader members")
 			.sort({ createdAt: -1 });
 		const parsedRes = res.map(this.parser).filter((obj) => obj != null);
 		if (parsedRes.length > 0) return parsedRes;
@@ -104,11 +108,17 @@ class ProjectRepo extends BaseRepo<Project, IProject> {
 	): Promise<Array<IProject>> {
 		const res = await this.model
 			.find<Project>({ members: { $in: [userId] } })
-			.populate("owner members")
+			.populate("owner leader members")
 			.sort({ createdAt: -1 });
 		const parsedRes = res.map(this.parser).filter((obj) => obj != null);
 		if (parsedRes.length > 0) return parsedRes;
 		return [];
+	}
+	public async fetchProjectByIdentifier(identifier: string) {
+		const res = await this.model
+			.findOne<Project>({ identifier })
+			.populate("owner leader members");
+		return this.parser(res);
 	}
 }
 
